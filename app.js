@@ -1,6 +1,6 @@
 require('colors'); //importe del paquete
 
-const { guardarDB } = require('./helpers/guardarArchivo');
+const { guardarDB, leerDB } = require('./helpers/guardarArchivo');
 const {inquirerMenu,
        pausa,
        leerInput
@@ -16,6 +16,12 @@ const main = async() => {
     let opt = '';
     const tareas = new Tareas(); //instancia Tareas
 
+    const tareasDB = leerDB();
+
+    if (tareasDB){//cargar tareas
+        tareas.cargarTareasFromArray( tareasDB)
+    }
+
     do {
         //imprime el menú y retorna una opcion seleccionada 
         opt =  await inquirerMenu(); 
@@ -28,15 +34,14 @@ const main = async() => {
                 break;
         
             case '2':
-                console.log(tareas.listadoArr);
+                tareas.listadoCompleto();
                 break;
         }
 
-        // guardarDB(tareas.listadoArr);
-
-
+        guardarDB(tareas.listadoArr);
+        
         await pausa();
-
+        
     } while (opt !== '0');
 
 }
